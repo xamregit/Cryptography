@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Crypto_Lab_2
 {
@@ -28,15 +24,15 @@ namespace Crypto_Lab_2
             return Result;
         }
 
-        private static bool MillerRabinTest(ulong n, int k)
+        private static bool MillerRabinTest(ulong p, int k)
         {
-            if (n == 2 || n == 3)
+            if (p == 2 || p == 3)
                 return true;
 
-            if (n < 2 || n % 2 == 0)
+            if (p < 2 || p % 2 == 0)
                 return false;
 
-            ulong t = n - 1;
+            ulong t = p - 1;
 
             ulong s = 0;
 
@@ -55,7 +51,7 @@ namespace Crypto_Lab_2
 
                     byte[] data = new byte[4];
 
-                    while (a < 2 || a >= n)
+                    while (a < 2 || a >= p)
                     {
                         rng.GetBytes(data);
                         a = BitConverter.ToUInt32(data, 0);
@@ -63,25 +59,25 @@ namespace Crypto_Lab_2
                     
                 }
 
-                ulong x = FastPowFunc(a, t, n);
+                ulong x = FastPowFunc(a, t, p);
 
                 
-                if (x == 1 || x == n - 1)
+                if (x == 1 || x == p - 1)
                     continue;
 
                 for (ulong r = 1; r < s; r++)
                 {
                     
-                    x = x * x % n;
+                    x = x * x % p;
 
                     if (x == 1)
                         return false;
 
-                    if (x == n - 1)
+                    if (x == p - 1)
                         break;
                 }
 
-                if (x != n - 1)
+                if (x != p - 1)
                     return false;
             }
 
@@ -92,7 +88,9 @@ namespace Crypto_Lab_2
         {
             uint min = uint.MaxValue / 2;
             uint max = uint.MaxValue;
-            ulong n = 0;
+
+            ulong p = 0;
+
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
                 while (true)
@@ -102,9 +100,10 @@ namespace Crypto_Lab_2
 
                     long scale = BitConverter.ToUInt32(four_bytes, 0);
 
-                    n = (ulong)(min + (max - min) * (scale / (uint.MaxValue + 1.0)));
-                    if (n >= min && n < max && MillerRabinTest(n, 128))
-                        return n;
+                    p = (ulong)(min + (max - min) * (scale / (uint.MaxValue + 1.0)));
+
+                    if (p >= min && p < max && MillerRabinTest(p, 128))
+                        return p;
                 }
 
             }
