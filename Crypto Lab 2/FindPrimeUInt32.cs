@@ -5,14 +5,59 @@ namespace Crypto_Lab_2
 {
     class FindPrimeUInt32
     {
-        private static bool MillerRabinTest(ulong p, int k)
+
+        private static ulong RandUInt32(ulong _from, ulong _to)
+        {
+            ulong randNumber;
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+
+                byte[] data = new byte[4];
+
+                do
+                {
+                    rng.GetBytes(data);
+                    ulong scale = BitConverter.ToUInt32(data, 0);
+                    randNumber = (ulong)(_from + (_to - _from) * (scale / (UInt32.MaxValue + 1.0)));
+                }
+                while (randNumber < _from || randNumber >= _to);
+            }
+            return randNumber;
+        }
+
+
+        public static ulong FindPrimitiveRoot(ulong p)
+        {
+            bool isRoot;
+            ulong g;
+            do
+            {
+                g = RandUInt32(1, p - 2);
+                isRoot = true;
+                if (FastPow.FastPowFunc(g, p - 1, p) == 1)
+                {
+                    for (ulong i = 1; i < p - 2; i++)
+                    {
+                        if (FastPow.FastPowFunc(g, i, p) == 1)
+                        {
+                            isRoot = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            while (!isRoot);
+            return g;
+        }
+
+        private static bool MillerRabinTest(ulong p, ulong k)
         {
             if (p == 2 || p == 3)
                 return true;
 
             if (p < 2 || p % 2 == 0)
                 return false;
-            
+
             ulong t = p - 1;
 
             ulong s = 0;
@@ -23,22 +68,11 @@ namespace Crypto_Lab_2
                 s += 1;
             }
 
-            for (uint i = 0; i < k; i++)
+            for (ulong i = 0; i < k; i++)
             {
                 ulong a = 1;
-                
-                using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-                {
 
-                    byte[] data = new byte[4];
-
-                    while (a < 2 || a >= p)
-                    {
-                        rng.GetBytes(data);
-                        a = BitConverter.ToUInt32(data, 0);
-                    }
-                    
-                }
+                a = RandUInt32(2, p - 2);
 
                 ulong x = FastPow.FastPowFunc(a, t, p);
 
@@ -68,26 +102,16 @@ namespace Crypto_Lab_2
 
         public static ulong GenetarePrime()
         {
-            uint min = uint.MaxValue / 2;
-            uint max = uint.MaxValue;
+            ulong min = uint.MaxValue / 2;
+            ulong max = uint.MaxValue;
 
             ulong p = 0;
 
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            while(true)
             {
-                while (true)
-                {
-                    byte[] four_bytes = new byte[4];
-                    rng.GetBytes(four_bytes);
-
-                    long scale = BitConverter.ToUInt32(four_bytes, 0);
-
-                    p = (ulong)(min + (max - min) * (scale / (uint.MaxValue + 1.0)));
-
-                    if (p >= min && p < max && MillerRabinTest(p, 128))
-                        return p;
-                }
-
+                p = RandUInt32(min, max);
+                if (MillerRabinTest(p, 128))
+                    return p;
             }
         }
     }

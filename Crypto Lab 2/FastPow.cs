@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Crypto_Lab_2
 {
+    
     class FastPow
     {
         public static ulong FastPowFunc(ulong number, ulong pow, ulong mod)
