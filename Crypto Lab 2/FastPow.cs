@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Crypto_Lab_2
+namespace PGGenerator
 {
     
     class FastPow

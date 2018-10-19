@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace Crypto_Lab_2
+namespace PGGenerator
 {
     class FindPrimeUInt32
     {
+       // private static ulong k = 0;
 
         private static ulong RandUInt32(ulong _from, ulong _to)
         {
@@ -26,17 +27,25 @@ namespace Crypto_Lab_2
         }
 
 
-        public static ulong FindPrimitiveRoot(ulong p)
+        public static ulong FindPrimitiveRoot(ulong[] pk)
         {
+            ulong p = pk[0];
+            ulong k = pk[1];
+
             bool isRoot;
             ulong g;
+            ulong j = 0;
             do
             {
-                g = RandUInt32(1, p - 2);
+                do {
+                    g = RandUInt32(1, p - 2);
+                }
+                while (!MillerRabinTest(g, 128));
+
                 isRoot = true;
                 if (FastPow.FastPowFunc(g, p - 1, p) == 1)
                 {
-                    for (ulong i = 1; i < p - 2; i++)
+                    for (ulong i = 1; i <= k; i++)
                     {
                         if (FastPow.FastPowFunc(g, i, p) == 1)
                         {
@@ -45,13 +54,15 @@ namespace Crypto_Lab_2
                         }
                     }
                 }
+                j++;
             }
             while (!isRoot);
             return g;
         }
 
-        private static bool MillerRabinTest(ulong p, ulong k)
+        private static bool MillerRabinTest(ulong p, ulong l)
         {
+
             if (p == 2 || p == 3)
                 return true;
 
@@ -68,7 +79,7 @@ namespace Crypto_Lab_2
                 s += 1;
             }
 
-            for (ulong i = 0; i < k; i++)
+            for (ulong i = 0; i < l; i++)
             {
                 ulong a = 1;
 
@@ -100,18 +111,21 @@ namespace Crypto_Lab_2
         }
 
 
-        public static ulong GenetarePrime()
+        public static ulong[] GenetarePrime()
         {
-            ulong min = uint.MaxValue / 2;
-            ulong max = uint.MaxValue;
-
-            ulong p = 0;
+            ulong min = uint.MaxValue / 4;
+            ulong max = uint.MaxValue / 2;
+            ulong[] pk = new ulong[2];
+            //ulong p = 0;
 
             while(true)
             {
-                p = RandUInt32(min, max);
-                if (MillerRabinTest(p, 128))
-                    return p;
+                pk[1] = RandUInt32(min, max);
+                if (MillerRabinTest(pk[1], 128) && MillerRabinTest(2 * pk[1] + 1, 128))
+                {
+                    pk[0] = 2 * pk[1] + 1;
+                    return pk;
+                }
             }
         }
     }
