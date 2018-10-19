@@ -3,27 +3,8 @@ using System.Security.Cryptography;
 
 namespace Crypto_Lab_2
 {
-    class FindPrime
+    class FindPrimeUInt32
     {
-        private static ulong FastPowFunc(ulong Number, ulong Pow, ulong Mod)
-        {
-            ulong Result = 1;
-            ulong Bit = Number % Mod;
-
-            while (Pow > 0)
-            {
-                if ((Pow & 1) == 1)
-                {
-                    Result *= Bit;
-                    Result %= Mod;
-                }
-                Bit *= Bit;
-                Bit %= Mod;
-                Pow >>= 1;
-            }
-            return Result;
-        }
-
         private static bool MillerRabinTest(ulong p, int k)
         {
             if (p == 2 || p == 3)
@@ -31,7 +12,7 @@ namespace Crypto_Lab_2
 
             if (p < 2 || p % 2 == 0)
                 return false;
-
+            
             ulong t = p - 1;
 
             ulong s = 0;
@@ -59,7 +40,7 @@ namespace Crypto_Lab_2
                     
                 }
 
-                ulong x = FastPowFunc(a, t, p);
+                ulong x = FastPow.FastPowFunc(a, t, p);
 
                 
                 if (x == 1 || x == p - 1)
@@ -83,6 +64,7 @@ namespace Crypto_Lab_2
 
             return true;
         }
+
 
         public static ulong GenetarePrime()
         {

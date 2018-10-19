@@ -11,7 +11,7 @@ namespace Crypto_Lab_2
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(FindPrime.GenetarePrime().ToString());
+            Console.WriteLine(FindPrimeUInt32.GenetarePrime().ToString());
             Console.ReadKey();
         }
     }
