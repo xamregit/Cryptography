@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using System.IO;
 
-namespace PGGenerator
+namespace PGGeneratorUInt32
 {
     class Program
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine(FindPrimeUInt32.GenetarePrime());
-            //Console.WriteLine(FindPrimeUInt32.FindPrimitiveRoot(11));
-
-            //Console.WriteLine(FastPow.FastPowFunc(3, 2188910080, 2188910081));
-
             using (StreamWriter fstream = new StreamWriter("output.txt"))
             {
                 ulong[] pk = new ulong[2];

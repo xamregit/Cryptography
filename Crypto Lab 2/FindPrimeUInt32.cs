@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace PGGenerator
+namespace PGGeneratorUInt32
 {
     class FindPrimeUInt32
     {
-       // private static ulong k = 0;
-
         private static ulong RandUInt32(ulong _from, ulong _to)
         {
             ulong randNumber;
@@ -14,14 +12,10 @@ namespace PGGenerator
             {
 
                 byte[] data = new byte[4];
-
-                do
-                {
-                    rng.GetBytes(data);
-                    ulong scale = BitConverter.ToUInt32(data, 0);
-                    randNumber = (ulong)(_from + (_to - _from) * (scale / (UInt32.MaxValue + 1.0)));
-                }
-                while (randNumber < _from || randNumber >= _to);
+                rng.GetBytes(data);
+                ulong scale = BitConverter.ToUInt32(data, 0);
+                randNumber = (ulong)(_from + (_to - _from) * (scale / (UInt32.MaxValue + 1.0)));
+                
             }
             return randNumber;
         }
@@ -116,7 +110,6 @@ namespace PGGenerator
             ulong min = uint.MaxValue / 4;
             ulong max = uint.MaxValue / 2;
             ulong[] pk = new ulong[2];
-            //ulong p = 0;
 
             while(true)
             {
